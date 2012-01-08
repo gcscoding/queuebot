@@ -1,1 +1,0 @@
-java -cp bin\ queuebot.bot.QueueBot
