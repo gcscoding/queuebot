@@ -133,8 +133,9 @@ public class QueueBotThread implements Runnable {
 				}
 				try {
 					int num = Integer.parseInt(parts[1]);
-					_bot.setQueue((LinkedList<Message>) q.subList(_bot
-							.getQueue().size() - num, q.size()));
+					if (num <= q.size()) {
+						_bot.setQueue(new LinkedList<Message>(q.subList(q.size() - num, q.size())));
+					}
 				} catch (NumberFormatException e) {
 					_bot.prepSend("PRIVMSG " + gu
 							+ " :Invalid usage. Proper usage: !trim X\r\n");
@@ -165,6 +166,33 @@ public class QueueBotThread implements Runnable {
 				_bot.prepSend("PRIVMSG " + uname + " :!get [X]\r\n");
 				_bot.prepSend("PRIVMSG " + uname + " :!trim X\r\n");
 				_bot.prepSend("PRIVMSG " + uname + " :!clear\r\n");
+				_bot.prepSend("PRIVMSG " + uname + " :!auto <off|N D>\r\n");
+			}
+		} else if ("!auto".equals(parts[0])) {
+			boolean res = verifyUname(uname);
+			if (res) {
+				if (parts.length != 2 && parts.length != 3) {
+					_bot.prepSend("PRIVMSG "
+							+ gu
+							+ " :Invalid usage. Proper usage: !auto <off|N D>\r\n");
+				} else {
+					if ("off".equals(parts[1])) {
+						_bot.setAutoMode(false, 0, 0);
+					} else {
+						try {
+							int num = Integer.parseInt(parts[1]);
+							int interval = Integer.parseInt(parts[2]);
+							_bot.setAutoMode(true, num, interval);
+						} catch (NumberFormatException e) {
+							_bot.prepSend("PRIVMSG "
+									+ gu
+									+ " :Invalid usage. Proper usage: !auto <off|N D>\r\n");
+						}
+					}
+				}
+			} else {
+				QueueBotLogger.log(Level.WARNING, "INVALID USER ACCESS: "
+						+ uname);
 			}
 		}
 	}

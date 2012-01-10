@@ -2,6 +2,9 @@ package queuebot.bot;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -43,13 +46,73 @@ public class QueueBot {
 	private Socket _sock;
 	private char[] ibuf;
 	private BufferedWriter out;
+	private boolean autoMode;
+	private int autoCount;
+	private int autoInterval;
 
 	// private String leftovers;
 
 	public static void main(String[] args) {
-		QueueBot qb = new QueueBot("irc.quakenet.org", 6667, "#guardsmanbob",
-				"GQueueBot", "GQueueBot", "GQueueBot", 10, "GuardsmanBob",
-				50000, true);
+		String server = "";
+		int port = 0;
+		String chan = "";
+		String nick = "";
+		String user = "";
+		String rname = "";
+		int pingafter = 0;
+		String superuser = "";
+		int queuelimit = 0;
+		boolean debug = false;
+
+		try {
+			QueueBotLogger.makeLogFile();
+		} catch (IOException e) {
+			System.out.println("THERE WAS AN ERROR CREATING THE LOG FILES.");
+			System.exit(1);
+		}
+		File ini = new File("QueueBot.ini");
+		FileReader r = null;
+		try {
+			r = new FileReader(ini);
+		} catch (FileNotFoundException e) {
+			QueueBotLogger.log(Level.SEVERE, "NO QueueBot.ini FILE FOUND");
+			System.exit(1);
+		}
+		BufferedReader b = new BufferedReader(r);
+		String line = "";
+		try {
+			while ((line = b.readLine()) != null) {
+				String[] parts = line.trim().split("=");
+				if (parts[0].equals("SERVER")) {
+					server = parts[1];
+				} else if (parts[0].equals("PORT")) {
+					port = Integer.parseInt(parts[1]);
+				} else if (parts[0].equals("CHANNEL")) {
+					chan = parts[1];
+				} else if (parts[0].equals("NICK")) {
+					nick = parts[1];
+				} else if (parts[0].equals("USER")) {
+					user = parts[1];
+				} else if (parts[0].equals("RNAME")) {
+					rname = parts[1];
+				} else if (parts[0].equals("PINGAFTER")) {
+					pingafter = Integer.parseInt(parts[1]);
+				} else if (parts[0].equals("SUPERUSER")) {
+					superuser = parts[1];
+				} else if (parts[0].equals("QUEUELIMIT")) {
+					queuelimit = Integer.parseInt(parts[1]);
+				} else if (parts[0].equals("DEBUG")) {
+					debug = parts[1].equals("true");
+				}
+			}
+		} catch (IOException e) {
+			QueueBotLogger
+					.log(Level.SEVERE,
+							"ERROR READING FROM QueueBot.ini. FAILED TO SET UP THE BOT");
+			System.exit(1);
+		}
+		QueueBot qb = new QueueBot(server, port, chan, nick, user, rname,
+				pingafter, superuser, queuelimit, debug);
 		qb.start();
 	}
 
@@ -97,13 +160,9 @@ public class QueueBot {
 		ibuf = new char[4096];
 		// leftovers = "";
 		MAXMSGS = maxmessages;
-
-		try {
-			QueueBotLogger.makeLogFile();
-		} catch (IOException e) {
-			System.out.println("THERE WAS AN ERROR CREATING THE LOG FILES.");
-			System.exit(1);
-		}
+		autoMode = false;
+		autoCount = 0;
+		autoInterval = 0;
 	}
 
 	/**
@@ -146,6 +205,7 @@ public class QueueBot {
 	 */
 	private void listen() {
 		try {
+			QueueBotAutoThread autoThread = null;
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					_sock.getInputStream()));
 			while (true) {
@@ -153,14 +213,36 @@ public class QueueBot {
 					prepSend("PING ALIVE" + System.currentTimeMillis() + "\r\n");
 					lastPinged = System.currentTimeMillis();
 				}
+				if (autoMode) {
+					if (autoThread == null || !autoThread.isAlive()) {
+						autoThread = new QueueBotAutoThread(this, autoCount,
+								autoInterval, _DEBUG);
+						autoThread.setDaemon(true);
+						autoThread.start();
+						if (_DEBUG) {
+							QueueBotLogger.log(Level.INFO,
+									"Spawned a new auto thread");
+						}
+					}
+				} else {
+					if (autoThread != null && autoThread.isAlive()) {
+						autoThread.shutDown();
+						if (_DEBUG) {
+							QueueBotLogger.log(Level.INFO,
+									"Shutdown an auto thread");
+						}
+					}
+				}
 				// Worker threads should request a send, but this is backup
-				trySend(); 
+				trySend();
 				try {
 					if (in.read(ibuf) >= 0) {
 						String[] lines = getLines(ibuf);
 						ibuf = new char[ibuf.length];
-						(new Thread(new QueueBotThread(this, lines, _DEBUG)))
-								.start();
+						Thread t = new Thread(new QueueBotThread(this, lines,
+								_DEBUG));
+						t.setDaemon(true);
+						t.start();
 					}
 				} catch (SocketTimeoutException e) {
 					QueueBotLogger.log(Level.WARNING, "READ TIMED OUT.");
@@ -173,7 +255,9 @@ public class QueueBot {
 
 	/**
 	 * Parses the data read from the socket into lines.
-	 * @param buf a character array hold read data
+	 * 
+	 * @param buf
+	 *            a character array hold read data
 	 * @return an array of Strings containing full lines of IRC messages
 	 */
 	private String[] getLines(char[] buf) {
@@ -194,7 +278,7 @@ public class QueueBot {
 
 	/**
 	 * @return true if enough time has elapsed that the bot needs to ping the
-	 * server.
+	 *         server.
 	 */
 	private boolean needsPing() {
 		return joined
@@ -205,7 +289,7 @@ public class QueueBot {
 	 * Attempts to send whatever messages are in the tosend queue.
 	 */
 	public synchronized void trySend() {
-		boolean doFlush = false; 
+		boolean doFlush = false;
 		while (!tosend.isEmpty()) {
 			doFlush = true; // we will need to flush after writing
 			String o = tosend.remove();
@@ -263,5 +347,11 @@ public class QueueBot {
 
 	public void setQueue(LinkedList<Message> q) {
 		_mq = q;
+	}
+
+	public void setAutoMode(boolean value, int num, int interval) {
+		autoMode = value;
+		autoCount = num;
+		autoInterval = interval;
 	}
 }
