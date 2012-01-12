@@ -88,6 +88,10 @@ public class QueueBotThread implements Runnable {
 			}
 			String s = b.toString().trim();
 			Message m = new Message(uname, s);
+			if(q.contains(m)) {
+				_bot.prepSend("PRIVMSG " + uname + " :Sorry, but that exact question is already in the queue.\r\n");
+				return;
+			}
 			q.add(m);
 			_bot.prepSend("PRIVMSG " + uname + " :Added your message: \"" + s
 					+ "\" to the queue. Your position in queue is " + q.size()

@@ -313,42 +313,85 @@ public class QueueBot {
 		}
 	}
 
+	/**
+	 * 
+	 * @return the bot's nickname
+	 */
 	public String getNick() {
 		return _ircnick;
 	}
 
+	/**
+	 * 
+	 * @return the channel the bot joined
+	 */
 	public String getChan() {
 		return _ircchan;
 	}
 
+	/**
+	 * 
+	 * @return the nickname of the superuser
+	 */
 	public String getGU() {
 		return _goduser;
 	}
 
+	/**
+	 * 
+	 * @return true if the server has already pinged the bot at least once
+	 */
 	public boolean gotFirstPing() {
 		return firstPing;
 	}
 
+	/**
+	 * Set's the bot's firstPing flag to indicate if the bot has been pinged
+	 * at least once.
+	 * @param value the value to set the firstPing flag
+	 */
 	public void setFirstPing(boolean value) {
 		firstPing = value;
 	}
 
+	/**
+	 * 
+	 * @return true if the bot has successfully joined the channel
+	 */
 	public boolean isJoined() {
 		return joined;
 	}
 
+	/**
+	 * Set's the bot joined flag
+	 * @param value the value to set the joined flag
+	 */
 	public void setJoined(boolean value) {
 		joined = value;
 	}
 
+	/**
+	 *
+	 * @return the bot's message queue
+	 */
 	public LinkedList<Message> getQueue() {
 		return _mq;
 	}
 
+	/**
+	 * Sets the bot's message queue to a certain other queue
+	 * @param q the bot's new queue
+	 */
 	public void setQueue(LinkedList<Message> q) {
 		_mq = q;
 	}
 
+	/**
+	 * Activates the bot's auto mode and sets relevant variables
+	 * @param value should the bot be in auto mode
+	 * @param num how many messages should the bot print
+	 * @param interval how long should the bot wait between printings
+	 */
 	public void setAutoMode(boolean value, int num, int interval) {
 		autoMode = value;
 		autoCount = num;

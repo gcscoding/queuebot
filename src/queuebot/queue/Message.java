@@ -25,4 +25,13 @@ public class Message {
 	public void setContent(String content) {
 		_content = content;
 	}
+	
+	public boolean equals(Object o) {
+		if(o instanceof Message) {
+			Message m = (Message)o;
+			return m.getContent().compareToIgnoreCase(this._content) == 0;
+		} else {
+			return false;
+		}
+	}
 }
