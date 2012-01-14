@@ -55,10 +55,10 @@ public class QueueBot extends PircBot {
 		}
 	}
 
-	protected void onMessage(String channel, String sender, String login,
-			String hostname, String message) {
-		onPrivateMessage(sender, login, hostname, message);
-	}
+//	protected void onMessage(String channel, String sender, String login,
+//			String hostname, String message) {
+//		onPrivateMessage(sender, login, hostname, message);
+//	}
 
 	protected void onPrivateMessage(String sender, String login,
 			String hostname, String message) {
