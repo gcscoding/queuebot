@@ -1,1 +1,1 @@
-java -cp .\lib\pircbot.jar:.\bin\ queuebot.QueueBotMain
+java -cp .\lib\pircbot.jar;.\bin\ queuebot.QueueBotMain
