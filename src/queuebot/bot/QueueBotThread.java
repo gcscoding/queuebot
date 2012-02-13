@@ -59,15 +59,17 @@ public class QueueBotThread implements Runnable {
 						num = 1;
 					}
 				}
-				for (int i = 0; i < num; i++) {
-					if (!q.isEmpty()) {
-						Message item = q.remove();
+				Message[] items = bot.getMessage(num);
+				for (int i = 0; i < items.length; i++) {
+					if (items[i] != null) {
+						Message item = items[i];
 						bot.sendMessage(gu, item.getUsername() + " asked: "
 								+ item.getContent());
 						bot.sendMessage(chan, item.getUsername() + " asked: "
 								+ item.getContent());
 					} else {
 						bot.sendMessage(gu, "MESSAGE QUEUE EMPTY");
+						break;
 					}
 				}
 			} else {

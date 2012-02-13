@@ -1,1 +1,1 @@
-java -cp .\lib\pircbot.jar;.\bin\ queuebot.QueueBotMain
+java -cp .\lib\pircbot.jar;.\bin\ queuebot.QueueBotMain -s irc.quakenet.org -p 6667 -c #vakthrott -n QueueBot -su VakThrott -d
