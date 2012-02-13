@@ -171,7 +171,9 @@ public class QueueBot extends PircBot {
 
 	/**
 	 * Sets the bot's queue to a certain state
-	 * @param q the new queue for the bot
+	 * 
+	 * @param q
+	 *            the new queue for the bot
 	 */
 	public synchronized void setQueue(LinkedList<Message> q) {
 		mq = q;
@@ -185,6 +187,19 @@ public class QueueBot extends PircBot {
 		return mq;
 	}
 
+	/**
+	 * Puts the bot into auto mode. While in auto mode, the bot will attempt to
+	 * print a certain number of messages from its queue every so often.
+	 * 
+	 * @param channel
+	 *            the bot's channel
+	 * @param value
+	 *            true if the bot should enter auto mode
+	 * @param num
+	 *            the number of messages to print
+	 * @param interval
+	 *            the interval between printings
+	 */
 	public synchronized void setAutoMode(String channel, boolean value,
 			int num, int interval) {
 		channel = channel.toLowerCase();

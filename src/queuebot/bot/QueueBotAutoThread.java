@@ -11,8 +11,7 @@ public class QueueBotAutoThread extends Thread {
 	private int interval;
 	private boolean doRun;
 
-	public QueueBotAutoThread(QueueBot bot, int num,
-			int interval) {
+	public QueueBotAutoThread(QueueBot bot, int num, int interval) {
 		super();
 		this.bot = bot;
 		this.channel = this.bot.getChannels()[0];
@@ -35,8 +34,8 @@ public class QueueBotAutoThread extends Thread {
 				if (!q.isEmpty()) {
 					Message item = q.remove();
 					bot.sendMessage(gu,
-							item.getUsername() + " asked: " + item.getContent());
-					bot.sendMessage(channel, item.getUsername() + " asked: "
+							item.getSender() + " asked: " + item.getContent());
+					bot.sendMessage(channel, item.getSender() + " asked: "
 							+ item.getContent());
 				} else {
 					break;

@@ -1,3 +1,10 @@
+This document describes:
+General Usage
+Command Line Parameters
+
+
+GENERAL USAGE
+
 QueueBot is an IRC bot which sits on a single server and maintains a message
 queue. The bot responds to private messages from users which contain certain
 commands. Users have access to the following commands:
@@ -32,3 +39,15 @@ Turns on/off the bot's auto mode. While in auto mode, the bot will print N
 messages from its queue every D seconds, as if those messages had been
 requested using !get. The bot does not send MESSAGE QUEUE EMPTY to the
 superuser if it tries to automatically print messages and none exist.
+
+
+COMMAND LINE PARAMETERS
+
+QueueBot takes several command line parameters:
+-s SERVER		Sets the server that the bot should connect to
+-p PORT			Sets the port that the bot should connect on
+-c CHANNEL		Sets the channel to join (should include the #)
+-n NICK			Sets the bot's nickname
+-su SUPERUSER	Sets the nick of the bot's superuser
+-d				(OPTIONAL) Puts the bot into debug mode, which will cause the
+				bot to produce verbose output
