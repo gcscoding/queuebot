@@ -21,3 +21,9 @@
 ===============================================================================
 * Changed the bot's framework to use the Pirc framework. All previous 
   functionality has been preserved.
+===============================================================================
+2012-02-12
+===============================================================================
+* Changed the bot to receive parameters from arguments in the batch file rather
+  than from a .INI file. This seemed to provide better usability and the
+  ability to mor easily spawn multiple bots.
