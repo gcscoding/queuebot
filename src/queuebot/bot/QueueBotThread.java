@@ -5,6 +5,11 @@ import java.util.LinkedList;
 import queuebot.bot.QueueBot;
 import queuebot.queue.Message;
 
+/**
+ * 
+ * @author Winslow Dalpe
+ *
+ */
 public class QueueBotThread implements Runnable {
 
 	private QueueBot bot;
@@ -49,7 +54,7 @@ public class QueueBotThread implements Runnable {
 							+ "\" to the queue. Your position in queue is "
 							+ bot.getQueueSize() + ".");
 		} else if ("!get".equals(parts[0])) {
-			boolean res = verifyUname(gu, user);
+			boolean res = verifyUname(user);
 			if (res) {
 				int num = 1;
 				if (parts.length == 2) {
@@ -76,7 +81,7 @@ public class QueueBotThread implements Runnable {
 				bot.log("INVALID USER ACCESS: " + user);
 			}
 		} else if ("!trim".equals(parts[0])) {
-			boolean res = verifyUname(gu, user);
+			boolean res = verifyUname(user);
 			if (res) {
 				if (parts.length != 2) {
 					bot.sendMessage(gu, "Invalid usage. Proper usage: !trim X");
@@ -95,7 +100,7 @@ public class QueueBotThread implements Runnable {
 				bot.log("INVALID USER ACCESS: " + user);
 			}
 		} else if ("!clear".equals(parts[0])) {
-			boolean res = verifyUname(gu, user);
+			boolean res = verifyUname(user);
 			if (res) {
 				q.clear();
 			} else {
@@ -105,7 +110,7 @@ public class QueueBotThread implements Runnable {
 			bot.sendMessage(uname, "There are currently " + q.size()
 					+ " messages in the queue.");
 		} else if ("!help".equals(parts[0])) {
-			boolean res = verifyUname(gu, user);
+			boolean res = verifyUname(user);
 			bot.sendMessage(uname, "!ask QUESTION");
 			bot.sendMessage(uname, "!count");
 			if (res) {
@@ -115,7 +120,7 @@ public class QueueBotThread implements Runnable {
 				bot.sendMessage(uname, "!auto <off|N D>");
 			}
 		} else if ("!auto".equals(parts[0])) {
-			boolean res = verifyUname(gu, user);
+			boolean res = verifyUname(user);
 			if (res) {
 				if (parts.length != 2 && parts.length != 3) {
 					bot.sendMessage(gu,
@@ -140,7 +145,7 @@ public class QueueBotThread implements Runnable {
 		}
 	}
 
-	private boolean verifyUname(String gu, String uname) {
+	private boolean verifyUname(String uname) {
 		return bot.isSuperUser(uname);
 	}
 }

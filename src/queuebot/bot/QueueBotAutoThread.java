@@ -1,9 +1,12 @@
 package queuebot.bot;
 
-import java.util.LinkedList;
-
 import queuebot.queue.Message;
 
+/**
+ * 
+ * @author Winslow Dalpe
+ *
+ */
 public class QueueBotAutoThread extends Thread {
 	private QueueBot bot;
 	private String channel;
@@ -11,6 +14,12 @@ public class QueueBotAutoThread extends Thread {
 	private int interval;
 	private boolean doRun;
 
+	/**
+	 * 
+	 * @param bot
+	 * @param num
+	 * @param interval
+	 */
 	public QueueBotAutoThread(QueueBot bot, int num, int interval) {
 		super();
 		this.bot = bot;
@@ -28,15 +37,15 @@ public class QueueBotAutoThread extends Thread {
 				bot.log("THREAD INTERRUPTED DURING SLEEP");
 				continue;
 			}
-			LinkedList<Message> q = bot.getQueue();
 			String gu = bot.getSuperUser();
 			for (int i = 0; i < num; i++) {
-				if (!q.isEmpty()) {
-					Message item = q.remove();
+				Message item[] = bot.getMessage(1);
+				if (item[0] != null) {
 					bot.sendMessage(gu,
-							item.getSender() + " asked: " + item.getContent());
-					bot.sendMessage(channel, item.getSender() + " asked: "
-							+ item.getContent());
+							item[0].getSender() + " asked: " + item[0].getContent());
+					bot.sendMessage(channel, item[0].getSender() + " asked: "
+							+ item[0].getContent());
+
 				} else {
 					break;
 				}

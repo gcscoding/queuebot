@@ -1,11 +1,6 @@
 package queuebot;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
@@ -28,6 +23,11 @@ public class QueueBotMain {
 	private static String superuser = "";
 	private static boolean debug = false;
 
+	/**
+	 * Parses the command line parameters for options
+	 * 
+	 * @param args an array of command line arguments
+	 */
 	private static void parseArgs(String[] args) {
 		boolean setServ = false;
 		boolean setPort = false;
