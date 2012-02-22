@@ -26,7 +26,8 @@ public class QueueBotMain {
 	/**
 	 * Parses the command line parameters for options
 	 * 
-	 * @param args an array of command line arguments
+	 * @param args
+	 *            an array of command line arguments
 	 */
 	private static void parseArgs(String[] args) {
 		boolean setServ = false;

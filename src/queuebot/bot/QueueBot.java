@@ -24,9 +24,12 @@ public class QueueBot extends PircBot {
 	private QueueBotAutoThread autoThread;
 
 	/**
+	 * Constructs a new QueueBot
 	 * 
 	 * @param channel
+	 *            the bot joins this channel after connecting
 	 * @param superuser
+	 *            the nickname of this bot's superuser
 	 */
 	public QueueBot(String channel, String superuser) {
 		this.superuser = superuser;
@@ -191,8 +194,6 @@ public class QueueBot extends PircBot {
 	 * Puts the bot into auto mode. While in auto mode, the bot will attempt to
 	 * print a certain number of messages from its queue every so often.
 	 * 
-	 * @param channel
-	 *            the bot's channel
 	 * @param value
 	 *            true if the bot should enter auto mode
 	 * @param num
@@ -200,17 +201,16 @@ public class QueueBot extends PircBot {
 	 * @param interval
 	 *            the interval between printings
 	 */
-	public synchronized void setAutoMode(String channel, boolean value,
-			int num, int interval) {
-		channel = channel.toLowerCase();
+	public synchronized void setAutoMode(boolean value, int num, int interval) {
 		if (value && !autoMode) {
-			autoThread = new QueueBotAutoThread(this, num, interval);
+			autoThread = QueueBotAutoThread.getInstance(this, num, interval);
 			autoThread.setDaemon(true);
 			autoThread.start();
 			autoMode = true;
 		} else {
 			if (autoThread != null && autoThread.isAlive()) {
-				autoThread.shutdown();
+				QueueBotAutoThread.closeInstance();
+				autoThread = null;
 				autoMode = false;
 			}
 		}

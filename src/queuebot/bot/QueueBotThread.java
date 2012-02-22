@@ -8,7 +8,7 @@ import queuebot.queue.Message;
 /**
  * 
  * @author Winslow Dalpe
- *
+ * 
  */
 public class QueueBotThread implements Runnable {
 
@@ -16,12 +16,21 @@ public class QueueBotThread implements Runnable {
 	private String uname;
 	private String line;
 
+	/**
+	 * 
+	 * @param bot
+	 * @param uname
+	 * @param line
+	 */
 	public QueueBotThread(QueueBot bot, String uname, String line) {
 		this.bot = bot;
 		this.uname = uname;
 		this.line = line;
 	}
 
+	/**
+	 * 
+	 */
 	public void run() {
 		if (line != null && !line.isEmpty() && uname != null
 				&& !uname.isEmpty()) {
@@ -29,6 +38,11 @@ public class QueueBotThread implements Runnable {
 		}
 	}
 
+	/**
+	 * 
+	 * @param user
+	 * @param line
+	 */
 	private void parse(String user, String line) {
 		String chan = bot.getChannels()[0];
 		String gu = bot.getSuperUser();
@@ -127,12 +141,12 @@ public class QueueBotThread implements Runnable {
 							"Invalid usage. Proper usage: !auto <off|N D>");
 				} else {
 					if ("off".equals(parts[1])) {
-						bot.setAutoMode(chan, false, 0, 0);
+						bot.setAutoMode(false, 0, 0);
 					} else {
 						try {
 							int num = Integer.parseInt(parts[1]);
 							int interval = Integer.parseInt(parts[2]);
-							bot.setAutoMode(chan, true, num, interval);
+							bot.setAutoMode(true, num, interval);
 						} catch (NumberFormatException e) {
 							bot.sendMessage(gu,
 									"Invalid usage. Proper usage: !auto <off|N D>");
@@ -145,6 +159,11 @@ public class QueueBotThread implements Runnable {
 		}
 	}
 
+	/**
+	 * 
+	 * @param uname
+	 * @return
+	 */
 	private boolean verifyUname(String uname) {
 		return bot.isSuperUser(uname);
 	}
