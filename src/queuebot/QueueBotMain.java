@@ -34,7 +34,6 @@ public class QueueBotMain {
 		boolean setChan = false;
 		boolean setNick = false;
 		boolean setSU = false;
-		boolean setDebug = false;
 
 		for (String a : args) {
 			if (setServ) {
