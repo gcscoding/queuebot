@@ -14,25 +14,48 @@ Command | Description
 Additionally, the bot responds specially to a specific user, identified by
 nickname only. This superuser has access to the following additional commands:
 
-<table>
-<tr><th>Command</th><th>Description</th></tr>
-<tr><td><code>!get [X]</code></td><td>
-Removes 1 or more messages from the bot's queue and prints them on the channel and to the superuser in the form <code>USERNICK asked: USERQUESTION</code><br/>	
-If the queue is empty, a single <code>MESSAGE QUEUE EMPTY</code> will be sent to the
-superuser.</td></tr>
-<tr>
-<td><code>!trim X</code></td>
-<td>Reduces the bot's message queue to the <code>X</code> most recent messages</td></tr>
-<tr>
-<td><code>!clear</code></td>
-<td>Clears all messages from the queue</td></tr>
-<tr>
-<td><code>!auto <off | N D></code></td>
-<td>Turns on/off the bot's auto mode. While in auto mode, the bot will print <code>N</code>
-messages from its queue every <code>D</code> seconds, as if those messages had been
-requested using <code>!get</code>. The bot does not send <code>MESSAGE QUEUE EMPTY</code> to the
-superuser if it tries to automatically print messages and none exist.</td></tr>
-</table>
+									<table><tr><th>Command</th><th>Description
+									</th></tr><tr><td><code>
+
+!get [X]
+
+									</code></td><td>
+
+Removes 1 or more messages from the bot's queue and prints them on the channel 
+and to the superuser in the form <code>USERNICK asked: USERQUESTION</code><br/>
+	
+If the queue is empty, a single <code>MESSAGE QUEUE EMPTY</code> will be sent to
+the superuser.
+
+									</td></tr><tr><td><code>
+
+!trim X
+
+									</code></td><td>
+
+Reduces the bot's message queue to the <code>X</code> most recent messages
+
+									</td></tr><tr><td><code>
+
+!clear
+
+									</code></td><td>
+
+Clears all messages from the queue
+
+									</td></tr><tr><td><code>
+
+!auto <off | N D>
+
+									</code></td><td>
+
+Turns on/off the bot's auto mode. While in auto mode, the bot will print 
+<code>N</code> messages from its queue every <code>D</code> seconds, as if those
+messages had been requested using <code>!get</code>. The bot does not send 
+<code>MESSAGE QUEUE EMPTY</code> to the superuser if it tries to automatically 
+print messages and none exist.
+
+									</td></tr></table>
 
 Command Line Parameters
 =======================
@@ -46,7 +69,8 @@ Parameter | Description
 `-c CHANNEL` | Sets the channel to join (should include the #)
 `-n NICK` | Sets the bot's nickname
 `-su SUPERUSER` | Sets the nick of the bot's superuser
-`-d` | (OPTIONAL) Puts the bot into debug mode, which will cause the bot to produce verbose output
+`-d` | (OPTIONAL) Puts the bot into debug mode, which will cause the bot to 
+produce verbose output
 
 Licensing and Legal Information
 ===============================
