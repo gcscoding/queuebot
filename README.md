@@ -19,7 +19,7 @@ Command | Description
 `!get [X]` | Removes 1 or more messages from the bot's queue and prints them on the channel and to the superuser in the form `USERNICK asked: USERQUESTION` If the queue is empty, a single `MESSAGE QUEUE EMPTY` will be sent to the superuser.
 `!trim X` | Reduces the bot's message queue to the X most recent messages
 `!clear` | Clears all messages from the queue
-`!auto <off | N D>` | Turns on/off the bot's auto mode. While in auto mode, the bot will print `N`
+`!auto <off \| N D>` | Turns on/off the bot's auto mode. While in auto mode, the bot will print `N`
 	messages from its queue every `D` seconds, as if those messages had been
 	requested using `!get`. The bot does not send `MESSAGE QUEUE EMPTY` to the
 	superuser if it tries to automatically print messages and none exist.
