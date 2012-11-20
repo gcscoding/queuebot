@@ -14,15 +14,25 @@ Command | Description
 Additionally, the bot responds specially to a specific user, identified by
 nickname only. This superuser has access to the following additional commands:
 
-Command | Description
-------- | -----------
-`!get [X]` | Removes 1 or more messages from the bot's queue and prints them on the channel and to the superuser in the form `USERNICK asked: USERQUESTION` If the queue is empty, a single `MESSAGE QUEUE EMPTY` will be sent to the superuser.
-`!trim X` | Reduces the bot's message queue to the X most recent messages
-`!clear` | Clears all messages from the queue
-`!auto <off | N D>` | Turns on/off the bot's auto mode. While in auto mode, the bot will print `N`
-	messages from its queue every `D` seconds, as if those messages had been
-	requested using `!get`. The bot does not send `MESSAGE QUEUE EMPTY` to the
-	superuser if it tries to automatically print messages and none exist.
+<table>
+<tr><th>Command</th><th>Description</th></tr>
+<tr><td><code>!get [X]</code></td><td>
+Removes 1 or more messages from the bot's queue and prints them on the channel and to the superuser in the form <code>USERNICK asked: USERQUESTION</code><br/>	
+If the queue is empty, a single <code>MESSAGE QUEUE EMPTY</code> will be sent to the
+superuser.</td></tr>
+<tr>
+<td><code>!trim X</code></td>
+<td>Reduces the bot's message queue to the <code>X</code> most recent messages</td></tr>
+<tr>
+<td><code>!clear</code></td>
+<td>Clears all messages from the queue</td></tr>
+<tr>
+<td><code>!auto <off | N D></code></td>
+<td>Turns on/off the bot's auto mode. While in auto mode, the bot will print <code>N</code>
+messages from its queue every <code>D</code> seconds, as if those messages had been
+requested using <code>!get</code>. The bot does not send <code>MESSAGE QUEUE EMPTY</code> to the
+superuser if it tries to automatically print messages and none exist.</td></tr>
+</table>
 
 Command Line Parameters
 =======================
