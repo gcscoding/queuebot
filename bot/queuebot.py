@@ -28,12 +28,29 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import asynchat
+from socket import AF_INET, SOCK_STREAM
 
 class QueueBot(asynchat.async_chat):
-    def __init__(self):
+    def __init__(self, nick, user, channel):
+        self.nick = nick
+        self.user = user
+        self.channel = channel
+        asynchat.async_chat.__init__(self)
+        self.ibuffer = []
+        self.create_socket(AF_INET, SOCK_STREAM)
         self.set_terminator('\r\n')
-
-
-
-
-
+    def introduce(self):
+        self.push('NICK %s' % self.nick)
+        self.push('USER %s 0 * : %s' % (self.user, self.user))
+    def collect_incoming_data(self, data):
+        self.ibuffer.append(data)
+    def found_terminator(self):
+        buffed = "".join(self.ibuffer)
+        print buffed
+        if(buffed.find('PING') >= 0):
+            self.push(buffed.replace('PING', 'PONG'))
+        self.ibuffer = []
+    def push(self, data):
+        data = data + self.get_terminator()
+        print data
+        asynchat.async_chat.push(self, data)
