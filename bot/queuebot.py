@@ -29,12 +29,18 @@
 
 import asynchat
 from socket import AF_INET, SOCK_STREAM
+from bot.messageparser import MessageParser
 
 class QueueBot(asynchat.async_chat):
     def __init__(self, nick, user, channel):
         self.nick = nick
         self.user = user
         self.channel = channel
+        self.logged_in = False
+        self.joined = False
+        
+        self.parser = MessageParser(self)
+        
         asynchat.async_chat.__init__(self)
         self.ibuffer = []
         self.create_socket(AF_INET, SOCK_STREAM)
@@ -42,13 +48,14 @@ class QueueBot(asynchat.async_chat):
     def introduce(self):
         self.push('NICK %s' % self.nick)
         self.push('USER %s 0 * : %s' % (self.user, self.user))
+    def join(self):
+        self.push('JOIN %s' % self.channel)
     def collect_incoming_data(self, data):
         self.ibuffer.append(data)
     def found_terminator(self):
         buffed = "".join(self.ibuffer)
         print buffed
-        if(buffed.find('PING') >= 0):
-            self.push(buffed.replace('PING', 'PONG'))
+        self.parser.parse_message(buffed)
         self.ibuffer = []
     def push(self, data):
         data = data + self.get_terminator()
