@@ -51,8 +51,11 @@ class MessageParser:
         if(len(parts) >= 4 and parts[1] == 'PRIVMSG' and parts[2] == self.bot.nick):
             self.parse_command(parts[0], parts[3:])
     def parse_command(self, sender, message):
-        message = " ".join(message)
-        print message
+        first = (message[0])[1:]
+        message = " ".join(message[1:])
         sender = sender.split('!')[0][1:]
-        print sender
-        self.bot.push('PRIVMSG %s %s' % (sender, message))
+        
+        if first == '!help':
+            self.bot.help(sender)
+        elif first == '!quit':
+            self.bot.quit(sender.lower())

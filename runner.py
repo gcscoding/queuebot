@@ -23,7 +23,7 @@
 import asyncore
 from bot.queuebot import QueueBot
 
-bot = QueueBot('gqbp3', 'gqbp', '#guardsmanbob')
+bot = QueueBot('gqbp', 'gqbp', '#guardsmanbob', 'Vakthrott')
 bot.connect(('irc.quakenet.org', 6667))
 bot.introduce()
 asyncore.loop()

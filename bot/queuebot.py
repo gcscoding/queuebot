@@ -32,12 +32,13 @@ from socket import AF_INET, SOCK_STREAM
 from bot.messageparser import MessageParser
 
 class QueueBot(asynchat.async_chat):
-    def __init__(self, nick, user, channel):
+    def __init__(self, nick, user, channel, su):
         self.nick = nick
         self.user = user
         self.channel = channel.lower()
         self.logged_in = False
         self.joined = False
+        self.superuser = su.lower()
         
         self.parser = MessageParser(self)
         
@@ -61,3 +62,21 @@ class QueueBot(asynchat.async_chat):
         data = data + self.get_terminator()
         print data
         asynchat.async_chat.push(self, data)
+    
+    def help(self, sender):
+        help_strs = ["!ask QUESTION    Puts a question into the bot's message queue", \
+                    "!count    Get the current size of the queue", \
+                    "!get [X]    Removes 1 or X messages (if X is given) from the bot's queue and prints them on the channel", \
+                    "!trim X    Reduces the bot's message queue to the X most recent messages", \
+                    "!clear    Clears all messages from the queue", \
+                    "!auto <off | N D>    Turns on/off the bot's auto mode. While in auto mode, the bot will print N messages from its queue every D seconds.", \
+                    "!quit    The bot will finish sending queued messages and quit"] \
+                    if sender == self.superuser else \
+                    ["!ask QUESTION    Puts a question into the bot's message queue", \
+                    "!count    Get the current size of the queue"]
+        for help_str in help_strs:
+            self.push("PRIVMSG %s :%s" % (sender, help_str))
+    def quit(self, sender):
+        if(sender == self.superuser):
+            self.push("QUIT")
+            self.close_when_done()
