@@ -32,18 +32,27 @@ class MessageParser:
         elif(not self.bot.joined):
             self.check_for_join(parts)
         else:
-            pass
+            self.check_for_command(parts)
     def check_for_ping(self, message, parts):
         if(parts[0] == 'PING'):
             self.bot.push(message.replace('PING', 'PONG'))
     def check_for_join(self, parts):
         uname = parts[0].split('!')[0][1:]
         if(uname == self.bot.nick):
-            if(len(parts) >= 3 and parts[1] == 'JOIN' and parts[2] == self.bot.channel):
+            if(len(parts) >= 3 and parts[1] == 'JOIN' and parts[2].lower() == self.bot.channel):
                 self.bot.joined = True
                 print '>>>DEBUG: BOT JOINED %s' % self.bot.channel
     def check_for_login(self, parts):
         if(len(parts) >= 4 and (parts[1] == 'MODE' or parts[1] == '221') \
            and parts[2] == self.bot.nick and parts[3] == '+i'):
-            self.bot.join() 
             self.bot.logged_in = True
+            self.bot.join() 
+    def check_for_command(self, parts):
+        if(len(parts) >= 4 and parts[1] == 'PRIVMSG' and parts[2] == self.bot.nick):
+            self.parse_command(parts[0], parts[3:])
+    def parse_command(self, sender, message):
+        message = " ".join(message)
+        print message
+        sender = sender.split('!')[0][1:]
+        print sender
+        self.bot.push('PRIVMSG %s %s' % (sender, message))

@@ -35,7 +35,7 @@ class QueueBot(asynchat.async_chat):
     def __init__(self, nick, user, channel):
         self.nick = nick
         self.user = user
-        self.channel = channel
+        self.channel = channel.lower()
         self.logged_in = False
         self.joined = False
         
