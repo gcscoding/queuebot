@@ -59,3 +59,7 @@ class MessageParser:
             self.bot.help(sender)
         elif first == '!quit':
             self.bot.quit(sender.lower())
+        elif first == '!ask':
+            self.bot.ask(sender, message)
+        elif first == '!get':
+            self.bot.get(sender.lower(), message)

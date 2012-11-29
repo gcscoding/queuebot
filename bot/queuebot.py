@@ -28,6 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import asynchat
+from collections import deque
 from socket import AF_INET, SOCK_STREAM
 from bot.messageparser import MessageParser
 
@@ -41,6 +42,8 @@ class QueueBot(asynchat.async_chat):
         self.superuser = su.lower()
         
         self.parser = MessageParser(self)
+        
+        self.message_queue = deque()
         
         asynchat.async_chat.__init__(self)
         self.ibuffer = []
@@ -80,3 +83,19 @@ class QueueBot(asynchat.async_chat):
         if(sender == self.superuser):
             self.push("QUIT")
             self.close_when_done()
+    def ask(self, sender, content):
+        question = (sender, content)
+        self.message_queue.append(question)
+    def get(self, sender, count_str):
+        if(sender == self.superuser):
+            try:
+                count = int(count_str) if (len(count_str) > 0) else 1
+                for i in range(count):
+                    try:
+                        question = self.message_queue.popleft()
+                        self.push("PRIVMSG %s :%s asked: %s" % (self.superuser, question[0], question[1]))
+                    except IndexError:
+                        self.push("PRIVMSG %s :MESSAGE QUEUE EMPTY" % self.superuser)
+                        return
+            except:
+                return
