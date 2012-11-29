@@ -63,3 +63,7 @@ class MessageParser:
             self.bot.ask(sender, message)
         elif first == '!get':
             self.bot.get(sender.lower(), message)
+        elif first == '!count':
+            self.bot.count(sender)
+        elif first == '!trim':
+            self.bot.trim(sender.lower(), message)

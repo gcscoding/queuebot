@@ -28,9 +28,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import asynchat
+import thread
 from collections import deque
 from socket import AF_INET, SOCK_STREAM
 from bot.messageparser import MessageParser
+
+m_lock = thread.allocate_lock()
 
 class QueueBot(asynchat.async_chat):
     def __init__(self, nick, user, channel, su):
@@ -67,16 +70,16 @@ class QueueBot(asynchat.async_chat):
         asynchat.async_chat.push(self, data)
     
     def help(self, sender):
-        help_strs = ["!ask QUESTION    Puts a question into the bot's message queue", \
-                    "!count    Get the current size of the queue", \
-                    "!get [X]    Removes 1 or X messages (if X is given) from the bot's queue and prints them on the channel", \
-                    "!trim X    Reduces the bot's message queue to the X most recent messages", \
-                    "!clear    Clears all messages from the queue", \
+        help_strs = ["!ask QUESTION        Puts a question into the bot's message queue", \
+                    "!count               Get the current size of the queue", \
+                    "!get [X]             Removes 1 or X messages (if X is given) from the bot's queue and prints them on the channel", \
+                    "!trim X              Reduces the bot's message queue to the X most recent messages", \
+                    "!clear               Clears all messages from the queue", \
                     "!auto <off | N D>    Turns on/off the bot's auto mode. While in auto mode, the bot will print N messages from its queue every D seconds.", \
-                    "!quit    The bot will finish sending queued messages and quit"] \
+                    "!quit                The bot will finish sending queued messages and quit"] \
                     if sender == self.superuser else \
                     ["!ask QUESTION    Puts a question into the bot's message queue", \
-                    "!count    Get the current size of the queue"]
+                    "!count           Get the current size of the queue"]
         for help_str in help_strs:
             self.push("PRIVMSG %s :%s" % (sender, help_str))
     def quit(self, sender):
@@ -86,7 +89,9 @@ class QueueBot(asynchat.async_chat):
     def ask(self, sender, content):
         question = (sender, content)
         self.message_queue.append(question)
+        self.push("PRIVMSG %s :Your question is %d in the queue" % (sender, len(self.message_queue)))
     def get(self, sender, count_str):
+        m_lock.acquire()
         if(sender == self.superuser):
             try:
                 count = int(count_str) if (len(count_str) > 0) else 1
@@ -95,7 +100,29 @@ class QueueBot(asynchat.async_chat):
                         question = self.message_queue.popleft()
                         self.push("PRIVMSG %s :%s asked: %s" % (self.superuser, question[0], question[1]))
                     except IndexError:
+                        m_lock.release()
                         self.push("PRIVMSG %s :MESSAGE QUEUE EMPTY" % self.superuser)
                         return
             except:
+                m_lock.release()
                 return
+        m_lock.release()
+    def count(self, sender):
+        self.push("PRIVMSG %s :There are %d messages in the queue" % (sender, len(self.message_queue)))
+    def trim(self, sender, count_str):
+        m_lock.acquire()
+        if(sender == self.superuser):
+            try:
+                count = int(count_str) if (len(count_str) > 0) else -1
+                if(count < 0 or count >= len(self.message_queue)):
+                    m_lock.release()
+                    return
+                self.message_queue.rotate(count)
+                nq = deque()
+                for i in range(count):
+                    nq.append(self.message_queue.popleft())
+                self.message_queue = nq
+            except:
+                m_lock.release()
+                return
+        m_lock.release()
