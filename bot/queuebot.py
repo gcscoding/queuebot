@@ -126,3 +126,8 @@ class QueueBot(asynchat.async_chat):
                 m_lock.release()
                 return
         m_lock.release()
+    def clear(self, sender):
+        m_lock.acquire()
+        if(sender == self.superuser):
+            self.message_queue.clear()
+        m_lock.release()

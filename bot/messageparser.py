@@ -67,3 +67,5 @@ class MessageParser:
             self.bot.count(sender)
         elif first == '!trim':
             self.bot.trim(sender.lower(), message)
+        elif first == '!clear':
+            self.bot.clear(sender.lower())
