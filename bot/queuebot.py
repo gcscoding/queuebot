@@ -32,6 +32,7 @@ import thread
 from collections import deque
 from socket import AF_INET, SOCK_STREAM
 from bot.messageparser import MessageParser
+from bot.autothread import AutoGetThread
 
 m_lock = thread.allocate_lock()
 
@@ -49,6 +50,7 @@ class QueueBot(asynchat.async_chat):
         self.message_queue = deque()
         
         asynchat.async_chat.__init__(self)
+        self.auto_thread = None
         self.ibuffer = []
         self.create_socket(AF_INET, SOCK_STREAM)
         self.set_terminator('\r\n')
@@ -84,6 +86,8 @@ class QueueBot(asynchat.async_chat):
             self.push("PRIVMSG %s :%s" % (sender, help_str))
     def quit(self, sender):
         if(sender == self.superuser):
+            if(self.auto_thread != None and not self.auto_thread.is_stopped()):
+                self.auto_thread.stop()
             self.push("QUIT")
             self.close_when_done()
     def ask(self, sender, content):
@@ -131,3 +135,27 @@ class QueueBot(asynchat.async_chat):
         if(sender == self.superuser):
             self.message_queue.clear()
         m_lock.release()
+    def set_auto(self, sender, toggle, n, d):
+        if(sender == self.superuser):
+            if(toggle == 'on'):
+                try:
+                    N = int(n)
+                    print N
+                    D = int(d)
+                    print D
+                    if(N < 0 or D < 0):
+                        return
+                    if(self.auto_thread == None):
+                        self.auto_thread = AutoGetThread(self, N, D)
+                        self.auto_thread.start()
+                    else:
+                        self.auto_thread.N = N
+                        self.auto_thread.D = D
+                except:
+                    return
+            elif(toggle == 'off'):
+                if(self.auto_thread != None and not self.auto_thread.is_stopped()):
+                    self.auto_thread.stop()
+                    while not self.auto_thread.is_stopped():
+                        pass
+                    self.auto_thread = None

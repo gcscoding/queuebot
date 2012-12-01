@@ -56,7 +56,7 @@ class MessageParser:
         sender = sender.split('!')[0][1:]
         
         if first == '!help':
-            self.bot.help(sender)
+            self.bot.help(sender.lower())
         elif first == '!quit':
             self.bot.quit(sender.lower())
         elif first == '!ask':
@@ -69,3 +69,17 @@ class MessageParser:
             self.bot.trim(sender.lower(), message)
         elif first == '!clear':
             self.bot.clear(sender.lower())
+        elif first == '!auto':
+            parts = message.split(" ")
+            toggle = ""
+            n = None
+            d = None
+            if(len(parts) == 1):
+                toggle = parts[0]
+            elif(len(parts) >= 3):
+                toggle = parts[0]
+                n = parts[1]
+                d = parts[2]
+            else:
+                return
+            self.bot.set_auto(sender.lower(), toggle, n, d)
