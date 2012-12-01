@@ -140,9 +140,7 @@ class QueueBot(asynchat.async_chat):
             if(toggle == 'on'):
                 try:
                     N = int(n)
-                    print N
                     D = int(d)
-                    print D
                     if(N < 0 or D < 0):
                         return
                     if(self.auto_thread == None):

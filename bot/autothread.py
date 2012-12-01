@@ -32,7 +32,6 @@ class AutoGetThread(threading.Thread):
     def run(self):
         self._run.set()
         while self._run.is_set():
-            print 'running'
             time.sleep(self.D)
             self.bot.get(self.bot.superuser, str(self.N))
     def stop(self):

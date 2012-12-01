@@ -49,7 +49,7 @@ nickname only. This superuser has access to the following additional commands:
 	</tr>
 	<tr>
 		<td>
-				<code>!auto <off | on N D></code>
+				<code>!auto &lt;off | on N D&gt;</code>
 		</td>
 		<td>
 				Turns on/off the bot's auto mode. While in auto mode, the bot will print 
